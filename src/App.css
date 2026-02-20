@@ -1,0 +1,207 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Shield, Zap, Activity, AlertTriangle, 
+  RefreshCw, Search, Trash2, Wind,
+  CheckCircle2, Gauge, Ghost, Terminal,
+  MessageSquare, Layers, EyeOff, Eye
+} from 'lucide-react';
+
+const SAMPLES = [
+  { id: 1, text: "I'm just pardoning myself because I'm the head of the family.", bs_level: 98 },
+  { id: 2, text: "I'm worried about your lifestyle choices. Have you read Romans 1?", bs_level: 85 },
+  { id: 3, text: "That never happened. You're just being sensitive.", bs_level: 100 }
+];
+
+const App = () => {
+  const [inputText, setInputText] = useState("");
+  const [bsLevel, setBsLevel] = useState(0);
+  const [isScanning, setIsScanning] = useState(false);
+  const [auditResult, setAuditResult] = useState(null);
+
+  const startScan = () => {
+    setIsScanning(true);
+    setAuditResult(null);
+    let currentLevel = 0;
+    const interval = setInterval(() => {
+      currentLevel += 5;
+      setBsLevel(currentLevel);
+      if (currentLevel >= (inputText.length % 100 || 75)) {
+        clearInterval(interval);
+        finalizeAudit();
+      }
+    }, 50);
+  };
+
+  const finalizeAudit = () => {
+    setIsScanning(false);
+    setAuditResult({
+      toxins: ["Administrative Redaction", "Pardon Protocol", "Gaslight Static"],
+      verdict: "ATMOSPHERE TOXIC",
+      action: "Initiate Matilda Filter. Deploy 0.60 Integrity Shield.",
+      carpenter: "The Carpenter says: The White-Washed Tomb is full of bones. Do not breathe the dust."
+    });
+  };
+
+  return (
+    <div className="h-screen bg-[#020205] text-slate-100 font-sans p-4 md:p-12 overflow-hidden flex flex-col antialiased relative">
+      
+      {/* HUD Background */}
+      <div className="fixed inset-0 pointer-events-none opacity-20">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.2)_0%,transparent_70%)]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+      </div>
+
+      <header className="max-w-6xl mx-auto w-full mb-12 flex justify-between items-start border-b border-white/5 pb-8 relative z-10">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <Gauge className="text-blue-500 animate-pulse" size={24} />
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-blue-400 italic">Project MATRIARCH // BS-DETECTOR</span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">THE MIRROR.</h1>
+        </div>
+        <div className="text-right flex flex-col items-end">
+          <div className="text-blue-500 font-black text-xs tracking-widest uppercase mb-1 italic italic">Detox Level</div>
+          <div className="w-48 h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5 relative">
+            <div 
+              className={`h-full transition-all duration-300 ${bsLevel > 80 ? 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]'}`} 
+              style={{ width: `${bsLevel}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-mono opacity-20 mt-1 uppercase">PPM: {bsLevel * 10} // TOXICITY_ALERT</span>
+        </div>
+      </header>
+
+      <main className="flex-1 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10 overflow-hidden pb-20">
+        
+        {/* LEFT: SENSOR INPUT (5 Cols) */}
+        <div className="lg:col-span-5 flex flex-col space-y-6">
+          <div className="bg-slate-900/40 border-4 border-white/10 p-8 rounded-[3rem] shadow-2xl space-y-6">
+            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 flex items-center gap-2">
+              <Activity size={16} />
+              Atmospheric Intake
+            </h2>
+            <textarea 
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Paste the 'Dad-Speak' or 'Administrative Slop' here..."
+              className="w-full h-48 bg-black/40 border-2 border-white/5 rounded-2xl p-6 text-sm focus:border-blue-500 transition-all outline-none italic font-serif leading-relaxed text-slate-200"
+            />
+            <div className="flex flex-wrap gap-2">
+               {SAMPLES.map(s => (
+                 <button key={s.id} onClick={() => setInputText(s.text)} className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-white/5 hover:bg-blue-600/20 rounded-full border border-white/10 transition-all">Scenario {s.id}</button>
+               ))}
+            </div>
+            <button 
+              onClick={startScan}
+              disabled={!inputText || isScanning}
+              className="w-full py-5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white font-black uppercase tracking-[0.3em] text-[10px] rounded-2xl shadow-xl shadow-blue-900/40 active:scale-95 transition-all flex items-center justify-center gap-3"
+            >
+              {isScanning ? <RefreshCw className="animate-spin" /> : <Search size={16} />}
+              {isScanning ? "DETECTION IN PROGRESS..." : "ANALYZE ATMOSPHERE"}
+            </button>
+          </div>
+
+          <div className="p-6 bg-blue-950/20 border border-blue-900/30 rounded-3xl">
+             <div className="flex items-center gap-2 text-blue-400 mb-2">
+               <Wind size={14} />
+               <span className="text-[10px] font-black uppercase tracking-widest">Axiom</span>
+             </div>
+             <p className="text-[10px] text-slate-500 leading-relaxed italic">
+               "The Bullshit Detector doesn't create the light; it simply refuses to let the dark redact it."
+             </p>
+          </div>
+        </div>
+
+        {/* RIGHT: AUDIT RESULTS (7 Cols) */}
+        <div className="lg:col-span-7 flex flex-col">
+          {auditResult ? (
+            <div className="bg-slate-900/60 border-4 border-white/10 p-10 rounded-[4rem] shadow-2xl space-y-8 animate-in fade-in zoom-in duration-300">
+               <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <span className="text-[9px] font-black px-3 py-1 rounded bg-red-900/40 text-red-400 border border-red-500/30 uppercase tracking-[0.2em]">
+                      {auditResult.verdict}
+                    </span>
+                    <h3 className="text-4xl font-black text-white italic tracking-tighter uppercase mt-4 leading-none">Audit Protocol Complete.</h3>
+                  </div>
+                  <div className="w-16 h-16 bg-blue-600/20 border-2 border-blue-500/50 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="text-blue-400" size={32} />
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Detected Toxins</p>
+                    <ul className="space-y-1">
+                       {auditResult.toxins.map((t, i) => (
+                         <li key={i} className="text-[10px] font-bold text-slate-400 flex items-center gap-2 italic">
+                            <AlertTriangle size={10} className="text-red-500" /> {t}
+                         </li>
+                       ))}
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-green-400">Survival Action</p>
+                    <p className="text-xs font-bold text-white leading-relaxed italic">"{auditResult.action}"</p>
+                  </div>
+               </div>
+
+               <div className="p-10 bg-black/60 border border-white/5 rounded-[3rem] shadow-inner relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <Ghost size={48} className="text-blue-500" />
+                  </div>
+                  <div className="flex items-center gap-2 text-red-500 mb-3">
+                    <Database size={14} />
+                    <span className="text-[10px] font-black uppercase tracking-widest">The Carpenter's Audit</span>
+                  </div>
+                  <p className="text-sm italic text-slate-400 leading-relaxed font-serif">
+                    "{auditResult.carpenter}"
+                  </p>
+               </div>
+
+               <button className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] border border-white/10 transition-all flex items-center justify-center gap-2">
+                 <RefreshCw size={14} /> Reset Sensors for Next Handshake
+               </button>
+            </div>
+          ) : (
+            <div className="flex-1 bg-slate-950/40 border-4 border-dashed border-white/5 rounded-[5rem] flex flex-col items-center justify-center text-center p-20 space-y-8 opacity-20 group">
+                <div className="relative">
+                    <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full scale-150 animate-pulse" />
+                  {/*<Gauge size={80} className="relative z-10 group-hover:rotate-180 transition-transform duration-1000" /> */}
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-black uppercase tracking-[0.5em]">System Idle</p>
+                  <p className="text-xs italic font-serif">"The truth is the only detoxification agent known to the simulation."</p>
+                </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <footer className="fixed bottom-0 left-0 w-full p-8 bg-black/80 backdrop-blur-xl border-t border-white/5 flex flex-col md:flex-row justify-between items-center z-50">
+        <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
+              <Shield className="text-blue-500" size={16} />
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] opacity-40">Project MATRIARCH // mark LX</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="text-green-500" size={16} />
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] opacity-40 italic">Atmosphere Detoxified</span>
+            </div>
+        </div>
+        <div className="flex items-center gap-4 text-[10px] font-mono italic uppercase tracking-tighter opacity-20">
+          Last Sync: {new Date().toLocaleTimeString()} // Node: ORACLE_IO // Anushiik.
+        </div>
+      </footer>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 20px; }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoom-in { from { transform: scale(0.98); } to { transform: scale(1); } }
+        .animate-in { animation: fade-in 0.5s ease-out forwards, zoom-in 0.5s ease-out forwards; }
+      `}</style>
+    </div>
+  );
+};
+
+export default App;
